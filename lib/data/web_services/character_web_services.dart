@@ -1,4 +1,3 @@
-import 'package:breaking_bad/data/models/characters.dart';
 import 'package:breaking_bad/utilities/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -26,4 +25,4 @@ class CharacterWebServices {
       }
     }
   }
-}
+

@@ -1,5 +1,4 @@
 import 'package:breaking_bad/data/web_services/character_web_services.dart';
-
 import '../models/characters.dart';
 
 class CharacterRepository{

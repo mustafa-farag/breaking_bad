@@ -5,9 +5,11 @@ import '../../data/repositories/chraacter_repository.dart';
 
 class CharactersCubit extends Cubit<AppStates> {
   final CharacterRepository characterRepository;
-  late List<Character> characters;
+  List<Character> characters = [];
 
   CharactersCubit(this.characterRepository) : super(InitialState());
+  static CharactersCubit get(context) => BlocProvider.of(context);
+
 
   List<Character> getAllCharacters() {
     characterRepository.getAllCharacters().then((characters) {
