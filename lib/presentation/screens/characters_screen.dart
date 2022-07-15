@@ -1,80 +1,59 @@
 import 'package:breaking_bad/business_logic/cubit/cubit.dart';
 import 'package:breaking_bad/data/models/characters.dart';
+import 'package:breaking_bad/presentation/widgets/grid_item.dart';
+import 'package:breaking_bad/utilities/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../business_logic/cubit/states.dart';
 
-class CharactersScreen extends StatelessWidget {
+class CharactersScreen extends StatefulWidget {
   const CharactersScreen({Key? key}) : super(key: key);
 
+  @override
+  State<CharactersScreen> createState() => _CharactersScreenState();
+}
+
+class _CharactersScreenState extends State<CharactersScreen> {
   Widget _buildBlocWidget() {
     return BlocBuilder<CharactersCubit, AppStates>(builder: (context, state) {
       if (state is CharacterLoadedState) {
-        return _buildCharacterScreen(context);
+        return _buildCharacterScreen(context, state.characters);
       }
-      return _showLoadingIndicator();
+      return const Center(
+        child: CircularProgressIndicator(color: MyColors.appBarColor,),
+      );
     });
   }
 
-  Widget _showLoadingIndicator() {
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-
-  Widget _buildCharacterScreen(context) {
-    final cubit = CharactersCubit.get(context);
+  Widget _buildCharacterScreen(context, List<Character> allCharacters) {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const ClampingScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 2 / 3,
-              crossAxisSpacing: 1,
-              mainAxisSpacing: 1,
-            ),
-            itemBuilder: (_, index) => _buildGridItem(cubit.characters[index]),
-            itemCount: cubit.characters.length,
-          )
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const ClampingScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 2 / 3,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 6,
+              ),
+              itemBuilder: (_, index) =>
+                  GridItem(character: allCharacters[index]),
+              itemCount: allCharacters.length,
+            )
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildGridItem(Character character) {
-    return SizedBox(
-      width: double.infinity,
-      height: 200,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          FadeInImage.assetNetwork(
-              placeholder: 'assets/images/loading.gif',
-              placeholderScale: 1.2,
-              placeholderFit: BoxFit.none,
-              image: character.image,
-              fit: BoxFit.cover,
-              imageErrorBuilder: (context, error, stackTrace) {
-                return Image.asset(
-                  "assets/images/something-went-wrong.gif",
-                  scale: 2,
-                  fit: BoxFit.cover,
-                );
-              }),
-          Container(
-            width: double.infinity,
-            color: Colors.black.withOpacity(0.2),
-            child: Text(
-              character.actorName,
-              style: const TextStyle(color: Colors.white),
-            ),
-          )
-        ],
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<CharactersCubit>(context).getAllCharacters();
   }
 
   @override

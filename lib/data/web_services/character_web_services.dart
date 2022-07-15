@@ -18,6 +18,7 @@ class CharacterWebServices {
     Future<List<dynamic>> getAllCharacters() async {
       try {
         Response response = await dio.get('characters');
+        debugPrint("Response: ${response.data.toString()}");
         return response.data;
       } catch (error) {
         debugPrint(error.toString());

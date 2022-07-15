@@ -1,3 +1,4 @@
+import 'package:breaking_bad/utilities/colors.dart';
 import 'package:breaking_bad/utilities/router.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+          color:MyColors.appBarColor,
+        ),
+        scaffoldBackgroundColor: MyColors.backgroundColor,
+        primaryColor: MyColors.appBarColor,
+      ),
       onGenerateRoute: appRouter.onGenerate,
     );
   }
