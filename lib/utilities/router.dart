@@ -1,4 +1,5 @@
 import 'package:breaking_bad/business_logic/cubit/cubit.dart';
+import 'package:breaking_bad/data/models/characters.dart';
 import 'package:breaking_bad/data/repositories/chraacter_repository.dart';
 import 'package:breaking_bad/data/web_services/character_web_services.dart';
 import 'package:breaking_bad/presentation/screens/characters_screen.dart';
@@ -25,7 +26,8 @@ class AppRouter {
                 child: const CharactersScreen()));
 
       case detailsScreen:
-        return MaterialPageRoute(builder: (_) => const DetailsScreen());
+        final character = settings.arguments as Character ;
+        return MaterialPageRoute(builder: (_) =>  DetailsScreen(character:character,));
     }
     return null;
   }

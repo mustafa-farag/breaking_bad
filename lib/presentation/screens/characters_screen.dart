@@ -5,6 +5,7 @@ import 'package:breaking_bad/utilities/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../business_logic/cubit/states.dart';
+import '../../utilities/constants.dart';
 
 class CharactersScreen extends StatefulWidget {
   const CharactersScreen({Key? key}) : super(key: key);
@@ -47,8 +48,12 @@ class _CharactersScreenState extends State<CharactersScreen> {
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
               ),
-              itemBuilder: (_, index) =>
-                  GridItem(character: allCharacters[index]),
+              itemBuilder: (_, index) => InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, detailsScreen,
+                        arguments: allCharacters[index]);
+                  },
+                  child: GridItem(character: allCharacters[index])),
               itemCount: allCharacters.length,
             )
           ],
