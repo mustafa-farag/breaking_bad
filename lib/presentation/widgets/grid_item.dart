@@ -43,7 +43,7 @@ class GridItem extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15.0),
               child: Text(
-                character.actorName,
+                character.name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(color: Colors.white),

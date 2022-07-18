@@ -9,3 +9,11 @@ class CharacterLoadedState extends AppStates {
 
   CharacterLoadedState(this.characters);
 }
+
+class GetSearchedCharactersState extends AppStates {
+  final List<Character> searchedCharacters;
+
+  GetSearchedCharactersState(this.searchedCharacters);
+}
+
+class SearchToggleState extends AppStates{}

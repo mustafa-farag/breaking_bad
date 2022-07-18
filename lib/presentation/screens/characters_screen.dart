@@ -14,21 +14,28 @@ class CharactersScreen extends StatefulWidget {
 }
 
 class _CharactersScreenState extends State<CharactersScreen> {
+  final controller = TextEditingController();
+
   Widget _buildBlocWidget() {
     return BlocBuilder<CharactersCubit, AppStates>(builder: (context, state) {
       if (state is CharacterLoadedState) {
         return _buildCharacterScreen(context, state.characters);
+      } else if (state is GetSearchedCharactersState) {
+        return _buildCharacterScreen(context, state.searchedCharacters);
       }
       return const Center(
-        child: CircularProgressIndicator(color: MyColors.appBarColor,),
+        child: CircularProgressIndicator(
+          color: MyColors.appBarColor,
+        ),
       );
     });
   }
 
   Widget _buildCharacterScreen(context, List<Character> allCharacters) {
     return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(15.0),
         child: Column(
           children: [
             GridView.builder(
@@ -38,7 +45,7 @@ class _CharactersScreenState extends State<CharactersScreen> {
                 crossAxisCount: 2,
                 childAspectRatio: 2 / 3,
                 crossAxisSpacing: 8,
-                mainAxisSpacing: 6,
+                mainAxisSpacing: 8,
               ),
               itemBuilder: (_, index) =>
                   GridItem(character: allCharacters[index]),
@@ -48,6 +55,62 @@ class _CharactersScreenState extends State<CharactersScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildSearchField() {
+    return TextFormField(
+      controller: controller,
+      decoration: const InputDecoration(
+          hintText: 'find a character ...',
+          border: InputBorder.none,
+          hintStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+          )),
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 18,
+      ),
+      onChanged: (text) =>
+          CharactersCubit.get(context).getSearchedCharacters(text),
+    );
+  }
+
+  List<Widget> _buildAppBarActions() {
+    if (CharactersCubit.get(context).isSearch == true) {
+      return [
+        IconButton(
+            onPressed: () {
+              CharactersCubit.get(context).setDefaultList();
+              setState(() {
+                controller.clear();
+                Navigator.pop(context);
+              });
+            },
+            icon: const Icon(Icons.close))
+      ];
+    } else {
+      return [
+        IconButton(
+            onPressed: () {
+              ModalRoute.of(context)!.addLocalHistoryEntry(
+                  LocalHistoryEntry(onRemove: _stopSearch));
+
+              setState(() {
+                CharactersCubit.get(context).isSearch = true;
+              });
+            },
+            icon: const Icon(Icons.search))
+      ];
+    }
+  }
+
+  void _stopSearch() {
+    CharactersCubit.get(context).setDefaultList();
+    setState(() {
+      controller.clear();
+      CharactersCubit.get(context).isSearch = false;
+    });
   }
 
   @override
@@ -60,7 +123,10 @@ class _CharactersScreenState extends State<CharactersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Characters'),
+        title: CharactersCubit.get(context).isSearch == true
+            ? _buildSearchField()
+            : const Text("Characters"),
+        actions: _buildAppBarActions(),
       ),
       body: _buildBlocWidget(),
     );
