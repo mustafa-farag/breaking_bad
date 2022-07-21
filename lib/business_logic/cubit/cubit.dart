@@ -10,7 +10,6 @@ class CharactersCubit extends Cubit<AppStates> {
   bool isSearch = false;
 
   CharactersCubit(this.characterRepository) : super(InitialState());
-
   static CharactersCubit get(context) => BlocProvider.of(context);
 
   List<Character> getAllCharacters() {
@@ -19,6 +18,12 @@ class CharactersCubit extends Cubit<AppStates> {
       this.characters = characters;
     });
     return characters;
+  }
+
+  void getQuote(String charName) {
+    characterRepository.getQuote(charName).then((quote) {
+      emit(QuoteLoadedState(quote));
+    });
   }
 
   void getSearchedCharacters(String text) {
@@ -32,12 +37,4 @@ class CharactersCubit extends Cubit<AppStates> {
     emit(CharacterLoadedState(characters));
   }
 
-  void searchToggle(bool isSearch) {
-    if (isSearch == true) {
-      this.isSearch = true;
-    } else {
-      this.isSearch = false;
-    }
-    emit(SearchToggleState());
-  }
 }
