@@ -29,6 +29,7 @@ class CharacterWebServices {
     try {
       Response response =
           await dio.get('quote', queryParameters: {'author': charName});
+      debugPrint(response.data.toString());
       return response.data;
     } catch (error) {
       debugPrint(error.toString());

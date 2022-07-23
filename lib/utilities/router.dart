@@ -21,13 +21,22 @@ class AppRouter {
     switch (settings.name) {
       case charactersScreen:
         return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                create: (context) => charactersCubit,
-                child: const CharactersScreen()));
+          builder: (_) => BlocProvider(
+            create: (context) => charactersCubit,
+            child: const CharactersScreen(),
+          ),
+        );
 
       case detailsScreen:
-        final character = settings.arguments as Character ;
-        return MaterialPageRoute(builder: (_) =>  DetailsScreen(character:character,));
+        final character = settings.arguments as Character;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => CharactersCubit(characterRepository),
+            child: DetailsScreen(
+              character: character,
+            ),
+          ),
+        );
     }
     return null;
   }

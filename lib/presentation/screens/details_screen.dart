@@ -1,5 +1,12 @@
+import 'dart:math';
+
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:breaking_bad/business_logic/cubit/cubit.dart';
+import 'package:breaking_bad/business_logic/cubit/states.dart';
 import 'package:breaking_bad/utilities/colors.dart';
+import 'package:buildcondition/buildcondition.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/models/characters.dart';
 
@@ -59,8 +66,51 @@ class DetailsScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildAnimatedText(state) {
+    int randomIndex = Random().nextInt(state.quote.length -1);
+    if (state.quote.isNotEmpty) {
+      return Center(
+        child: DefaultTextStyle(
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            fontSize: 20,
+            color: Colors.white,
+            shadows: [
+              Shadow(
+                blurRadius: 7,
+                color: Colors.white,
+                offset: Offset(0, 0),
+              )
+            ],
+          ),
+          child: AnimatedTextKit(
+            repeatForever: true,
+            animatedTexts: [
+              TyperAnimatedText(state.quote[randomIndex].quote),
+            ],
+          ),
+        ),
+      );
+    } else {
+      return const SizedBox();
+    }
+  }
+
+  Widget _quoteLoadedChecker(AppStates state){
+    return BuildCondition(
+      condition: state is QuoteLoadedState,
+      builder: (context) => _buildAnimatedText(state),
+      fallback: (context) => const Center(
+        child: CircularProgressIndicator(
+          color: MyColors.appBarColor,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    CharactersCubit.get(context).getQuote(character.name);
     return Scaffold(
       backgroundColor: MyColors.backgroundColor,
       body: CustomScrollView(
@@ -94,6 +144,12 @@ class DetailsScreen extends StatelessWidget {
                     _buildDivider(120),
                   _buildCharacterInfo('Actor/Actress : ', character.actorName),
                   _buildDivider(210),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  BlocBuilder<CharactersCubit, AppStates>(
+                    builder: (context, state) => _quoteLoadedChecker(state),
+                  ),
                 ],
               ),
             ),
