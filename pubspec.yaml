@@ -19,6 +19,7 @@ dependencies:
   flutter_bloc: ^8.0.1
   buildcondition: ^0.0.4
   animated_text_kit: ^4.2.2
+  flutter_offline: ^2.1.0
 
 dev_dependencies:
   flutter_test:
